@@ -5,7 +5,7 @@ const Recipe = require('./models/Recipe.model');
 // Import of the data from './data.json'
 const data = require('./data');
 
-const MONGODB_URI = 'mongodb://localhost:27017/recipe-app';
+const MONGODB_URI = 'mongodb://127.0.0.1/recipe-app';
 
 //Method 1 : Using Async Await
 
@@ -19,7 +19,43 @@ const manageRecipes = async () => {
     await Recipe.deleteMany();
 
     // Run your code here, after you have insured that the connection was made
-  } catch (error) {
+
+    const recipe = {
+      title: "Asinhas do chines",
+      level: "Amateur Chef",
+      ingredients: [
+        "1/2 cup rice vinegar",
+        "5 tablespoons honey",
+        "1/3 cup soy sauce (such as Silver Swan®)",
+        "1/4 cup Asian (toasted) sesame oil",
+        "3 tablespoons Asian chili garlic sauce",
+        "3 tablespoons minced garlic",
+        "salt to taste",
+        "8 skinless, boneless chicken thighs"
+      ],
+      cuisine: "Asian",
+      dishType: "main_course",
+      image: "https://images.media-allrecipes.com/userphotos/720x405/815964.jpg",
+      duration: 40,
+      creator: "Chef LePapu"
+    }
+    const newRecipe = await Recipe.create(recipe);
+    console.log(newRecipe.title)
+    
+    let allRecipes = await Recipe.insertMany(data);
+
+    allRecipes.forEach((recps) => console.log(recps.title));
+    
+    let updatedRigatoni = await Recipe.findOneAndUpdate({ title: 'Rigatoni alla Genovese'}, {duration:100}, {new: true});
+
+    if (updatedRigatoni.duration === 100) console.log("Rigatoni has been sucefully updated!");
+
+    let deleteCarrotCake = await Recipe.deleteOne({title: "Carrot Cake"});~
+    console.log(deleteCarrotCake);
+
+    mongoose.connection.close()
+  } 
+  catch (error) {
     console.log(error);
   }
 };
